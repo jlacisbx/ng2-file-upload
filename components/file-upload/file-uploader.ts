@@ -1,6 +1,6 @@
 import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
-
+import {Injectable, EventEmitter, Output} from 'angular2/core';
 function isFile(value:any) {
   return (File && value instanceof File);
 }
@@ -15,7 +15,7 @@ export class FileUploader {
   public authToken:string;
   public isUploading:boolean = false;
   public queue:Array<any> = [];
-  public progress:number = 0;;
+  public progress:number = 0;
   public autoUpload:boolean = false;
   public isHTML5:boolean = true;
   public removeAfterUpload:boolean = false;
@@ -179,7 +179,7 @@ export class FileUploader {
   }
 
   public onErrorItem(item:any, response:any, status:any, headers:any) {
-	 this.onError.emit();
+    this.onError.emit();
   }
 
   public onCancelItem(item:any, response:any, status:any, headers:any) {
