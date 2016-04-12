@@ -179,7 +179,7 @@ export class FileUploader {
   }
 
   public onErrorItem(item:any, response:any, status:any, headers:any) {
-    this.onError.emit();
+    this.onError.emit(response);
   }
 
   public onCancelItem(item:any, response:any, status:any, headers:any) {

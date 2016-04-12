@@ -16,11 +16,6 @@ npm-debug.log
 /demo/**/*.js
 /demo/**/*.d.ts
 /demo/**/*.js.map
-/components/**/*.js
-/components/**/*.d.ts
-/components/**/*.js.map
-ng2-file-upload.js
-ng2-file-upload.js.map
 /logs
 
 !/demo/components/file-upload/file-catcher.js
