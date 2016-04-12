@@ -10,11 +10,12 @@ function isFileLikeObject(value:any) {
 }
 
 export class FileUploader {
+  @Output() onError: EventEmitter<any> = new EventEmitter();
   public url:string;
   public authToken:string;
   public isUploading:boolean = false;
   public queue:Array<any> = [];
-  public progress:number = 0;
+  public progress:number = 0;;
   public autoUpload:boolean = false;
   public isHTML5:boolean = true;
   public removeAfterUpload:boolean = false;
@@ -178,6 +179,7 @@ export class FileUploader {
   }
 
   public onErrorItem(item:any, response:any, status:any, headers:any) {
+	 this.onError.emit();
   }
 
   public onCancelItem(item:any, response:any, status:any, headers:any) {
