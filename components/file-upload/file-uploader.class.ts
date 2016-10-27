@@ -1,7 +1,7 @@
 import {FileLikeObject} from './file-like-object.class';
 import {FileItem} from './file-item.class';
 import {FileType} from './file-type.class';
-import {Injectable, EventEmitter, Output} from 'angular2/core';
+import {Injectable, EventEmitter, Output} from '@angular/core';
 function isFile(value:any):boolean {
     return (File && value instanceof File);
 }

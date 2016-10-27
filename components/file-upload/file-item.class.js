@@ -1,13 +1,8 @@
 "use strict";
-var file_like_object_1 = require('./file-like-object');
+var file_like_object_class_1 = require("./file-like-object.class");
 var FileItem = (function () {
     function FileItem(uploader, some, options) {
-        this.uploader = uploader;
-        this.some = some;
-        this.options = options;
-        this.alias = 'file';
         this.url = '/';
-        this.method = 'POST';
         this.headers = [];
         this.withCredentials = true;
         this.formData = [];
@@ -18,18 +13,25 @@ var FileItem = (function () {
         this.isCancel = false;
         this.isError = false;
         this.progress = 0;
-        this.index = null;
-        this.file = new file_like_object_1.FileLikeObject(some);
+        this.index = void 0;
+        this.uploader = uploader;
+        this.some = some;
+        this.options = options;
+        this.file = new file_like_object_class_1.FileLikeObject(some);
         this._file = some;
-        this.url = uploader.url;
+        if (uploader.options) {
+            this.method = uploader.options.method || 'POST';
+            this.alias = uploader.options.itemAlias || 'file';
+        }
+        this.url = uploader.options.url;
     }
     FileItem.prototype.upload = function () {
         try {
             this.uploader.uploadItem(this);
         }
         catch (e) {
-            this.uploader._onCompleteItem(this, '', 0, []);
-            this.uploader._onErrorItem(this, '', 0, []);
+            this.uploader._onCompleteItem(this, '', 0, {});
+            this.uploader._onErrorItem(this, '', 0, {});
         }
     };
     FileItem.prototype.cancel = function () {
@@ -39,16 +41,25 @@ var FileItem = (function () {
         this.uploader.removeFromQueue(this);
     };
     FileItem.prototype.onBeforeUpload = function () {
+        return void 0;
+    };
+    FileItem.prototype.onBuildForm = function (form) {
+        return { form: form };
     };
     FileItem.prototype.onProgress = function (progress) {
+        return { progress: progress };
     };
     FileItem.prototype.onSuccess = function (response, status, headers) {
+        return { response: response, status: status, headers: headers };
     };
     FileItem.prototype.onError = function (response, status, headers) {
+        return { response: response, status: status, headers: headers };
     };
     FileItem.prototype.onCancel = function (response, status, headers) {
+        return { response: response, status: status, headers: headers };
     };
     FileItem.prototype.onComplete = function (response, status, headers) {
+        return { response: response, status: status, headers: headers };
     };
     FileItem.prototype._onBeforeUpload = function () {
         this.isReady = true;
@@ -59,6 +70,9 @@ var FileItem = (function () {
         this.isError = false;
         this.progress = 0;
         this.onBeforeUpload();
+    };
+    FileItem.prototype._onBuildForm = function (form) {
+        this.onBuildForm(form);
     };
     FileItem.prototype._onProgress = function (progress) {
         this.progress = progress;
@@ -72,7 +86,7 @@ var FileItem = (function () {
         this.isCancel = false;
         this.isError = false;
         this.progress = 100;
-        this.index = null;
+        this.index = void 0;
         this.onSuccess(response, status, headers);
     };
     FileItem.prototype._onError = function (response, status, headers) {
@@ -83,7 +97,7 @@ var FileItem = (function () {
         this.isCancel = false;
         this.isError = true;
         this.progress = 0;
-        this.index = null;
+        this.index = void 0;
         this.onError(response, status, headers);
     };
     FileItem.prototype._onCancel = function (response, status, headers) {
@@ -94,12 +108,12 @@ var FileItem = (function () {
         this.isCancel = true;
         this.isError = false;
         this.progress = 0;
-        this.index = null;
+        this.index = void 0;
         this.onCancel(response, status, headers);
     };
     FileItem.prototype._onComplete = function (response, status, headers) {
         this.onComplete(response, status, headers);
-        if (this.uploader.removeAfterUpload) {
+        if (this.uploader.options.removeAfterUpload) {
             this.remove();
         }
     };
@@ -110,4 +124,3 @@ var FileItem = (function () {
     return FileItem;
 }());
 exports.FileItem = FileItem;
-//# sourceMappingURL=file-item.js.map

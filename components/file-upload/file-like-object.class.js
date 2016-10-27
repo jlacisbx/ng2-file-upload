@@ -11,8 +11,8 @@ var FileLikeObject = (function () {
         this[method](fakePathOrObject);
     }
     FileLikeObject.prototype._createFromFakePath = function (path) {
-        this.lastModifiedDate = null;
-        this.size = null;
+        this.lastModifiedDate = void 0;
+        this.size = void 0;
         this.type = 'like/' + path.slice(path.lastIndexOf('.') + 1).toLowerCase();
         this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\') + 2);
     };
@@ -24,4 +24,3 @@ var FileLikeObject = (function () {
     return FileLikeObject;
 }());
 exports.FileLikeObject = FileLikeObject;
-//# sourceMappingURL=file-like-object.js.map

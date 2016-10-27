@@ -8,20 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('angular2/core');
-var FileSelect = (function () {
-    function FileSelect(element) {
+var core_1 = require("@angular/core");
+var file_uploader_class_1 = require("./file-uploader.class");
+var FileSelectDirective = (function () {
+    function FileSelectDirective(element) {
         this.element = element;
     }
-    FileSelect.prototype.getOptions = function () {
+    FileSelectDirective.prototype.getOptions = function () {
         return this.uploader.options;
     };
-    FileSelect.prototype.getFilters = function () {
+    FileSelectDirective.prototype.getFilters = function () {
+        return void 0;
     };
-    FileSelect.prototype.isEmptyAfterSelection = function () {
+    FileSelectDirective.prototype.isEmptyAfterSelection = function () {
         return !!this.element.nativeElement.attributes.multiple;
     };
-    FileSelect.prototype.onChange = function () {
+    FileSelectDirective.prototype.onChange = function () {
         var files = this.element.nativeElement.files;
         var options = this.getOptions();
         var filters = this.getFilters();
@@ -29,18 +31,20 @@ var FileSelect = (function () {
         if (this.isEmptyAfterSelection()) {
         }
     };
-    FileSelect = __decorate([
-        core_1.Directive({
-            selector: '[ng2-file-select]',
-            properties: ['uploader'],
-            host: {
-                '(change)': 'onChange()'
-            }
-        }), 
-        __metadata('design:paramtypes', [core_1.ElementRef])
-    ], FileSelect);
-    return FileSelect;
+    return FileSelectDirective;
 }());
-exports.FileSelect = FileSelect;
-exports.fileUpload = [FileSelect];
-//# sourceMappingURL=file-select.js.map
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", file_uploader_class_1.FileUploader)
+], FileSelectDirective.prototype, "uploader", void 0);
+__decorate([
+    core_1.HostListener('change'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Object)
+], FileSelectDirective.prototype, "onChange", null);
+FileSelectDirective = __decorate([
+    core_1.Directive({ selector: '[ng2FileSelect]' }),
+    __metadata("design:paramtypes", [core_1.ElementRef])
+], FileSelectDirective);
+exports.FileSelectDirective = FileSelectDirective;
