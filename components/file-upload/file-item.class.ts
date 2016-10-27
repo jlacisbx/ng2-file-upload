@@ -1,5 +1,7 @@
-import {FileLikeObject} from './file-like-object';
-import {FileUploader} from './file-uploader';
+import {NgZone} from '@angular/core';
+
+import {FileLikeObject} from './file-like-object.class';
+import {FileUploader} from './file-uploader.class';
 
 export class FileItem {
   public file:FileLikeObject;
@@ -17,15 +19,24 @@ export class FileItem {
   public isCancel:boolean = false;
   public isError:boolean = false;
   public progress:number = 0;
-  public index:number = null;
+  public index:number = void 0;
+  private _zone:NgZone;
 
-  constructor(private uploader:FileUploader, private some:any, private options:any) {
+  private uploader:FileUploader;
+  private some:any;
+  private options:any;
+
+  public constructor(uploader:FileUploader, some:any, options:any) {
+    this.uploader = uploader;
+    this.some = some;
+    this.options = options;
     this.file = new FileLikeObject(some);
     this._file = some;
-    this.url = uploader.url;
+    this.url = uploader.options.url;
+    this._zone = new NgZone({ enableLongStackTrace: false });
   }
 
-  public upload() {
+  public upload():void {
     try {
       this.uploader.uploadItem(this);
     } catch (e) {
@@ -34,33 +45,43 @@ export class FileItem {
     }
   }
 
-  public cancel() {
+  public cancel():void {
     this.uploader.cancelItem(this);
   }
 
-  public remove() {
+  public remove():void {
     this.uploader.removeFromQueue(this);
   }
 
-  public onBeforeUpload() {
+  public onBeforeUpload():void {
+    return void 0;
   }
 
-  public onProgress(progress:number) {
+  public onBuildForm(form:any):any {
+    return {form};
   }
 
-  public onSuccess(response:any, status:any, headers:any) {
+  public onProgress(progress:number):any {
+    return {progress};
   }
 
-  public onError(response:any, status:any, headers:any) {
+  public onSuccess(response:any, status:any, headers:any):any {
+    return {response,status,headers};
   }
 
-  public onCancel(response:any, status:any, headers:any) {
+  public onError(response:any, status:any, headers:any):any {
+    return {response,status,headers};
   }
 
-  public onComplete(response:any, status:any, headers:any) {
+  public onCancel(response:any, status:any, headers:any):any {
+    return {response,status,headers};
   }
 
-  private _onBeforeUpload() {
+  public onComplete(response:any, status:any, headers:any):any {
+    return {response,status,headers};
+  }
+
+  public _onBeforeUpload():void {
     this.isReady = true;
     this.isUploading = true;
     this.isUploaded = false;
@@ -71,12 +92,18 @@ export class FileItem {
     this.onBeforeUpload();
   }
 
-  private _onProgress(progress:number) {
-    this.progress = progress;
+  public _onBuildForm(form:any):void {
+    this.onBuildForm(form);
+  }
+
+  public _onProgress(progress:number):void {
+    this._zone.run(() => {
+      this.progress = progress;
+    });
     this.onProgress(progress);
   }
 
-  private _onSuccess(response:any, status:any, headers:any) {
+  public _onSuccess(response:any, status:any, headers:any):void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -84,11 +111,11 @@ export class FileItem {
     this.isCancel = false;
     this.isError = false;
     this.progress = 100;
-    this.index = null;
+    this.index = void 0;
     this.onSuccess(response, status, headers);
   }
 
-  private _onError(response:any, status:any, headers:any) {
+  public _onError(response:any, status:any, headers:any):void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -96,11 +123,11 @@ export class FileItem {
     this.isCancel = false;
     this.isError = true;
     this.progress = 0;
-    this.index = null;
+    this.index = void 0;
     this.onError(response, status, headers);
   }
 
-  private _onCancel(response:any, status:any, headers:any) {
+  public _onCancel(response:any, status:any, headers:any):void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = false;
@@ -108,19 +135,19 @@ export class FileItem {
     this.isCancel = true;
     this.isError = false;
     this.progress = 0;
-    this.index = null;
+    this.index = void 0;
     this.onCancel(response, status, headers);
   }
 
-  private _onComplete(response:any, status:any, headers:any) {
+  public _onComplete(response:any, status:any, headers:any):void {
     this.onComplete(response, status, headers);
 
-    if (this.uploader.removeAfterUpload) {
+    if (this.uploader.options.removeAfterUpload) {
       this.remove();
     }
   }
 
-  private _prepareToUploading() {
+  public _prepareToUploading():void {
     this.index = this.index || ++this.uploader._nextIndex;
     this.isReady = true;
   }
