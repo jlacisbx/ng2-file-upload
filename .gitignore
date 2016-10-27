@@ -8,6 +8,7 @@ npm-debug.log
 
 # WebStorm
 .idea
+.vscode
 
 # ignore build and dist for now
 /bundles
@@ -19,7 +20,13 @@ npm-debug.log
 # ignore incline compiling
 /demo/**/*.js
 /demo/**/*.d.ts
+!/demo/custom-typings.d.ts
 /demo/**/*.js.map
 /logs
 
 !/demo/components/file-upload/file-catcher.js
+
+# AoT generated files
+factories
+/**/*.metadata.json
+/**/*.ngfactory.ts
