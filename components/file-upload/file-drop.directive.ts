@@ -8,7 +8,7 @@ export class FileDropDirective {
   @Output() public fileOver:EventEmitter<any> = new EventEmitter();
   @Output() public onFileDrop:EventEmitter<File[]> = new EventEmitter<File[]>();
 
-  private element:ElementRef;
+  protected element:ElementRef;
 
   public constructor(element:ElementRef) {
     this.element = element;
@@ -51,24 +51,26 @@ export class FileDropDirective {
 
   @HostListener('dragleave', ['$event'])
   public onDragLeave(event:any):any {
-    if (event.currentTarget === (this as any).element[0]) {
-      return;
+    if ((this as any).element) {
+      if (event.currentTarget === (this as any).element[0]) {
+        return;
+      }
     }
 
     this._preventAndStop(event);
     this.fileOver.emit(false);
   }
 
-  private _getTransfer(event:any):any {
+  protected _getTransfer(event:any):any {
     return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer; // jQuery fix;
   }
 
-  private _preventAndStop(event:any):any {
+  protected _preventAndStop(event:any):any {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  private _haveFiles(types:any):any {
+  protected _haveFiles(types:any):any {
     if (!types) {
       return false;
     }
